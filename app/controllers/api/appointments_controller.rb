@@ -20,6 +20,8 @@ class Api::AppointmentsController < ApplicationController
 	def update
 		appointment = Appointment.find(params[:id])
 		if appointment.update(appointment_params)
+			appointment.end_time = appointment.start_time + 5.minutes
+			appointment.save
 			render status: 200, json: {
 				status: 200,
 				appointment: appointment
@@ -28,7 +30,7 @@ class Api::AppointmentsController < ApplicationController
 			render status: 422, json: {
 				status: 422,
 				errors: appointment.errors
-			}
+			}.to_json
 		end
 	end
 
@@ -53,12 +55,12 @@ class Api::AppointmentsController < ApplicationController
 		appointment.destroy
 		render status: 200, json: {
 			status: 200,
-		}
+		}.to_json
 	end
 
 	private 
 
 	def appointment_params
-		params.require(:appointment).permit(:first_name, :last_name, :start_time,																	 :end_time, :comments)
+		params.require(:appointment).permit(:first_name, :last_name, :start_time, :end_time, :comments)
 	end
 end
