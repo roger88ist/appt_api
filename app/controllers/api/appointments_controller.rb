@@ -10,6 +10,17 @@ class Api::AppointmentsController < ApplicationController
 	end
 
 	def create
+		appointment = Appointment.new(appointment_params)
+		if appointment.save
+			head 200
+		else
+			head 500
+		end
+	end
 
+	private 
+
+	def appointment_params
+		params.require(:appointment).permit(:first_name, :last_name, :start_time,																	 :end_time, :comments)
 	end
 end
