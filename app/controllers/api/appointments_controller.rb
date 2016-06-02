@@ -32,6 +32,14 @@ class Api::AppointmentsController < ApplicationController
 		end
 	end
 
+	def destroy
+		appointment = Appointment.find(params[:id])
+		appointment.destroy
+		render json: {
+			status: 200,
+		}
+	end
+
 	private 
 
 	def appointment_params
