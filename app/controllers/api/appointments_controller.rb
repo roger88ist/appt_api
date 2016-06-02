@@ -3,7 +3,7 @@ class Api::AppointmentsController < ApplicationController
 
 	def index
 		appointments = Appointment.all
-		render json: { 
+		render status: 200, json: { 
 			status: 200,
 			appointments: appointments
 		}.to_json
@@ -11,7 +11,7 @@ class Api::AppointmentsController < ApplicationController
 
 	def show
 		appointment = Appointment.find(params[:id])
-		render json: {
+		render status: 200, json: {
 			status: 200,
 			appointment: appointment
 		}.to_json
@@ -20,13 +20,13 @@ class Api::AppointmentsController < ApplicationController
 	def update
 		appointment = Appointment.find(params[:id])
 		if appointment.update(appointment_params)
-			render json: {
+			render status: 200, json: {
 				status: 200,
 				appointment: appointment
 			}.to_json
 		else
-			render json: {
-				status: 500,
+			render status: 422, json: {
+				status: 422,
 				errors: appointment.errors
 			}
 		end
@@ -35,13 +35,13 @@ class Api::AppointmentsController < ApplicationController
 	def create
 		appointment = Appointment.new(appointment_params)
 		if appointment.save
-			render json: {
+			render status: 200, json: {
 				status: 200,
 				appointment: appointment
 			}.to_json
 		else
-			render json: {
-				status: 500,
+			render status: 422, json: {
+				status: 422,
 				errors: appointment.errors
 			}.to_json
 		end
@@ -50,7 +50,7 @@ class Api::AppointmentsController < ApplicationController
 	def destroy
 		appointment = Appointment.find(params[:id])
 		appointment.destroy
-		render json: {
+		render status: 200, json: {
 			status: 200,
 		}
 	end
