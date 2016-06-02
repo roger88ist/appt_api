@@ -3,20 +3,32 @@ class Api::AppointmentsController < ApplicationController
 
 	def index
 		appointments = Appointment.all
-		render json: appointments
+		render json: { 
+			status: 200,
+			appointments: appointments
+		}.to_json
 	end
 
 	def show
 		appointment = Appointment.find(params[:id])
-		render json: appointment
+		render json: {
+			status: 200,
+			appointment: appointment
+		}.to_json
 	end
 
 	def create
 		appointment = Appointment.new(appointment_params)
 		if appointment.save
-			head 200
+			render json: {
+				status: 200,
+				appointment: appointment
+			}.to_json
 		else
-			head 500
+			render json: {
+				status: 500,
+				errors: appointment.errors
+			}.to_json
 		end
 	end
 
