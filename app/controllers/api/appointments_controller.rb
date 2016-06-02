@@ -34,6 +34,7 @@ class Api::AppointmentsController < ApplicationController
 
 	def create
 		appointment = Appointment.new(appointment_params)
+		appointment.end_time = appointment.start_time + 5.minutes
 		if appointment.save
 			render status: 200, json: {
 				status: 200,
