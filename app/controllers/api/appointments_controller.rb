@@ -8,4 +8,8 @@ class Api::AppointmentsController < ApplicationController
 		appointment = Appointment.find(params[:id])
 		render json: appointment
 	end
+
+	def create
+
+	end
 end
