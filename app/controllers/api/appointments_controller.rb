@@ -17,6 +17,21 @@ class Api::AppointmentsController < ApplicationController
 		}.to_json
 	end
 
+	def update
+		appointment = Appointment.find(params[:id])
+		if appointment.update(appointment_params)
+			render json: {
+				status: 200,
+				appointment: appointment
+			}.to_json
+		else
+			render json: {
+				status: 500,
+				errors: appointment.errors
+			}
+		end
+	end
+
 	def create
 		appointment = Appointment.new(appointment_params)
 		if appointment.save
