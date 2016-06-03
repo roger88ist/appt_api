@@ -7,7 +7,11 @@ class Api::AppointmentsController < ApplicationController
 	end
 
 	def show
-		appointment = Appointment.find(params[:id])
+		if params[:id] == "q"
+			appointment = Appointment.where(:start_time => params[:start_time]..params[:end_time])
+		else
+			appointment = Appointment.find(params[:id])
+		end
 		render_json_success_with_appointment(appointment)
 	end
 
