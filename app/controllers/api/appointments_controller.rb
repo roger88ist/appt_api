@@ -19,7 +19,6 @@ class Api::AppointmentsController < ApplicationController
 		appointment = Appointment.find(params[:id])
 		if Time.now < appointment.start_time
 			if appointment.update(appointment_params)
-				appointment.end_time = appointment.start_time + 5.minutes
 				appointment.save
 				render_json_success_with_appointment(appointment)
 			else
