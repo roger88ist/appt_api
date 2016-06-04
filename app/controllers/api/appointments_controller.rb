@@ -33,10 +33,18 @@ class Api::AppointmentsController < ApplicationController
 	def create
 		appointment = Appointment.new(appointment_params)
 		appointment.end_time = appointment.start_time + 5.minutes
-		if appointment.save
-			render_json_success_with_appointment(appointment)
+		bod = appointment.start_time.beginning_of_day
+		eod = appointment.start_time.end_of_day
+		today_appts = Appointment.where(:start_time =>  bod...eod)
+		conflict = get_resolution(today_appts, appointment.start_time, appointment.end_time)
+		unless conflict
+			if appointment.save
+				render_json_success_with_appointment(appointment)
+			else
+				render_json_error(appointment.errors)
+			end
 		else
-			render_json_error(appointment.errors)
+			render_json_error("New appointment conflicts with existing appointment. New appointment cannot be saved.")
 		end
 	end
 
@@ -47,6 +55,25 @@ class Api::AppointmentsController < ApplicationController
 	end
 
 	private 
+
+	def get_resolution(collection, start_t, end_t)
+		problem_one = 0
+		problem_two = 0
+		collection.each do |appt|
+			problem_one = check_start_conflict(appt.start_time, appt.end_time, start_t)
+			problem_two = check_end_conflict(appt.start_time, appt.end_time, end_t)
+			break if (problem_one || problem_two)
+		end
+		(problem_one || problem_two)
+	end
+
+	def check_start_conflict(arg1, arg2, time)
+		time >= arg1 && time < arg2 ? true : false
+	end
+
+	def check_end_conflict(arg1, arg2, time)
+		time > arg1 && time < arg2 ? true : false
+	end
 
 	def appointment_params
 		params.require(:appointment).permit(:first_name, :last_name, :start_time, :end_time, :comments)
@@ -71,4 +98,6 @@ class Api::AppointmentsController < ApplicationController
 			appointment: appointment
 		}.to_json
 	end
+
+
 end
