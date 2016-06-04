@@ -34,9 +34,13 @@ class Api::AppointmentsController < ApplicationController
 		appointment = Appointment.new(appointment_params)
 		appointment.end_time = appointment.start_time + 5.minutes
 		bod = appointment.start_time.beginning_of_day
-		eod = appointment.start_time.end_of_day
+		eod = appointment.end_time.end_of_day
 		today_appts = Appointment.where(:start_time =>  bod...eod)
-		conflict = get_resolution(today_appts, appointment.start_time, appointment.end_time)
+		if today_appts.count > 0
+			conflict = get_resolution(today_appts, appointment.start_time, appointment.end_time)
+		else
+			conflict = false
+		end
 		unless conflict
 			if appointment.save
 				render_json_success_with_appointment(appointment)
@@ -61,7 +65,11 @@ class Api::AppointmentsController < ApplicationController
 		problem_two = 0
 		collection.each do |appt|
 			problem_one = check_start_conflict(appt.start_time, appt.end_time, start_t)
+			puts "**************"
+			puts "problem_one = #{problem_one}"
 			problem_two = check_end_conflict(appt.start_time, appt.end_time, end_t)
+			puts "problem_two = #{problem_two}"
+			puts "**************"
 			break if (problem_one || problem_two)
 		end
 		(problem_one || problem_two)
