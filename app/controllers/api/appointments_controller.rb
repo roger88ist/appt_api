@@ -20,7 +20,6 @@ class Api::AppointmentsController < ApplicationController
 		t = Time.now
 		if t < appointment.start_time && t < appointment.end_time
 			if appointment.update(appointment_params)
-				appointment.save
 				render_json_success_with_appointment(appointment)
 			else
 				render_json_error(appointment.errors)
@@ -32,8 +31,8 @@ class Api::AppointmentsController < ApplicationController
 
 	def create
 		appointment = Appointment.new(appointment_params)
-		if is_valid_days(appointment.start_time, appointment.end_time)
-			if is_future_appointment(appointment.start_time, appointment.end_time)
+		# if is_valid_days(appointment.start_time, appointment.end_time)
+		# 	if is_future_appointment(appointment.start_time, appointment.end_time)
 				#proceed to check if it overlaps
 				bod = appointment.start_time.beginning_of_day
 				eod = appointment.end_time.end_of_day
@@ -52,13 +51,12 @@ class Api::AppointmentsController < ApplicationController
 				else
 					render_json_error("New appointment conflicts with existing appointment. New appointment cannot be saved.")
 				end
-			else
-				#render 422 appt must be in the future
-				render_json_error("Appointment can only be created in the future")
-			end
-		else
-			render_json_error("Appointment has invalid dates.")
-		end
+		# 	else
+		# 		render_json_error("Appointment can only be created in the future")
+		# 	end
+		# else
+		# 	render_json_error("Appointment has invalid dates.")
+		# end
 	end
 
 	def destroy
@@ -83,11 +81,7 @@ class Api::AppointmentsController < ApplicationController
 		problem_two = 0
 		collection.each do |appt|
 			problem_one = check_start_conflict(appt.start_time, appt.end_time, start_t)
-			puts "**************"
-			puts "problem_one = #{problem_one}"
 			problem_two = check_end_conflict(appt.start_time, appt.end_time, end_t)
-			puts "problem_two = #{problem_two}"
-			puts "**************"
 			break if (problem_one || problem_two)
 		end
 		(problem_one || problem_two)
