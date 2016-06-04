@@ -17,7 +17,8 @@ class Api::AppointmentsController < ApplicationController
 
 	def update
 		appointment = Appointment.find(params[:id])
-		if Time.now < appointment.start_time
+		t = Time.now
+		if t < appointment.start_time && t < appointment.end_time
 			if appointment.update(appointment_params)
 				appointment.save
 				render_json_success_with_appointment(appointment)
@@ -31,23 +32,32 @@ class Api::AppointmentsController < ApplicationController
 
 	def create
 		appointment = Appointment.new(appointment_params)
-		appointment.end_time = appointment.start_time + 5.minutes
-		bod = appointment.start_time.beginning_of_day
-		eod = appointment.end_time.end_of_day
-		today_appts = Appointment.where(:start_time =>  bod...eod)
-		if today_appts.count > 0
-			conflict = get_resolution(today_appts, appointment.start_time, appointment.end_time)
-		else
-			conflict = false
-		end
-		unless conflict
-			if appointment.save
-				render_json_success_with_appointment(appointment)
+		if is_valid_days(appointment.start_time, appointment.end_time)
+			if is_future_appointment(appointment.start_time, appointment.end_time)
+				#proceed to check if it overlaps
+				bod = appointment.start_time.beginning_of_day
+				eod = appointment.end_time.end_of_day
+				today_appts = Appointment.where(:start_time =>  bod...eod)
+				if today_appts.count > 0
+					conflicts = get_resolution(today_appts, appointment.start_time, appointment.end_time)
+				else
+					conflicts = false
+				end
+				unless conflicts
+					if appointment.save
+						render_json_success_with_appointment(appointment)
+					else
+						render_json_error(appointment.errors)
+					end
+				else
+					render_json_error("New appointment conflicts with existing appointment. New appointment cannot be saved.")
+				end
 			else
-				render_json_error(appointment.errors)
+				#render 422 appt must be in the future
+				render_json_error("Appointment can only be created in the future")
 			end
 		else
-			render_json_error("New appointment conflicts with existing appointment. New appointment cannot be saved.")
+			render_json_error("Appointment has invalid dates.")
 		end
 	end
 
@@ -58,6 +68,15 @@ class Api::AppointmentsController < ApplicationController
 	end
 
 	private 
+
+	def is_valid_days(st, et)
+		st < et ? true :false
+	end
+
+	def is_future_appointment(st, et)
+		time = Time.now
+		st > time && et > time ? true : false
+	end
 
 	def get_resolution(collection, start_t, end_t)
 		problem_one = 0
