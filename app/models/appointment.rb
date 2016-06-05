@@ -22,12 +22,15 @@ class Appointment < ActiveRecord::Base
 		today_appts = Appointment.where(:start_time => bod...eod)
 		if today_appts.count > 0
 			today_appts.each do |appt|
-				if (self.start_time >= appt.start_time && self.start_time < appt.end_time)
+				if self.start_time < appt.end_time && self.end_time > appt.start_time
 					return false
 				end
-				if (self.end_time > appt.start_time && self.end_time < appt.end_time)
-					return false
-				end
+				# if (self.start_time >= appt.start_time && self.start_time < appt.end_time)
+				# 	return false
+				# end
+				# if (self.end_time > appt.start_time && self.end_time < appt.end_time)
+				# 	return false
+				# end
 			end
 		end
 		true

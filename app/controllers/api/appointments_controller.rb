@@ -20,16 +20,6 @@ class Api::AppointmentsController < ApplicationController
 			appointment = Appointment.find(params[:id])
 		end
 		render_json_success_with_appointment(appointment)
-		# if params[:id] == "q"
-		# 	appointment = Appointment.where(:start_time => Time.parse(params[:start_time])..Time.parse(params[:end_time]))
-		# elsif params[:first_name]
-		# 	appointment = Appointment.where('lower(first_name = ?', params[:first_name].downcase)
-		# elsif params[:last_name]
-		# 	appointment = Appointment.where('lower(last_name = ?', params[:last_name].downcase)		
-		# else
-		# 	appointment = Appointment.find(params[:id])
-		# end
-		# render_json_success_with_appointment(appointment)
 	end
 
 	def update
