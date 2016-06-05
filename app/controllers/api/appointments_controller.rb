@@ -31,32 +31,11 @@ class Api::AppointmentsController < ApplicationController
 
 	def create
 		appointment = Appointment.new(appointment_params)
-		# if is_valid_days(appointment.start_time, appointment.end_time)
-		# 	if is_future_appointment(appointment.start_time, appointment.end_time)
-				#proceed to check if it overlaps
-				bod = appointment.start_time.beginning_of_day
-				eod = appointment.end_time.end_of_day
-				today_appts = Appointment.where(:start_time =>  bod...eod)
-				if today_appts.count > 0
-					conflicts = get_resolution(today_appts, appointment.start_time, appointment.end_time)
-				else
-					conflicts = false
-				end
-				unless conflicts
-					if appointment.save
-						render_json_success_with_appointment(appointment)
-					else
-						render_json_error(appointment.errors)
-					end
-				else
-					render_json_error("New appointment conflicts with existing appointment. New appointment cannot be saved.")
-				end
-		# 	else
-		# 		render_json_error("Appointment can only be created in the future")
-		# 	end
-		# else
-		# 	render_json_error("Appointment has invalid dates.")
-		# end
+		if appointment.save
+			render_json_success_with_appointment(appointment)
+		else
+			render_json_error(appointment.errors)
+		end
 	end
 
 	def destroy
@@ -66,34 +45,6 @@ class Api::AppointmentsController < ApplicationController
 	end
 
 	private 
-
-	def is_valid_days(st, et)
-		st < et ? true :false
-	end
-
-	def is_future_appointment(st, et)
-		time = Time.now
-		st > time && et > time ? true : false
-	end
-
-	def get_resolution(collection, start_t, end_t)
-		problem_one = 0
-		problem_two = 0
-		collection.each do |appt|
-			problem_one = check_start_conflict(appt.start_time, appt.end_time, start_t)
-			problem_two = check_end_conflict(appt.start_time, appt.end_time, end_t)
-			break if (problem_one || problem_two)
-		end
-		(problem_one || problem_two)
-	end
-
-	def check_start_conflict(arg1, arg2, time)
-		time >= arg1 && time < arg2 ? true : false
-	end
-
-	def check_end_conflict(arg1, arg2, time)
-		time > arg1 && time < arg2 ? true : false
-	end
 
 	def appointment_params
 		params.require(:appointment).permit(:first_name, :last_name, :start_time, :end_time, :comments)
