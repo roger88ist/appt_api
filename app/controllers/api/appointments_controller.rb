@@ -8,7 +8,7 @@ class Api::AppointmentsController < ApplicationController
 
 	def show
 		if params[:id] == "q"
-			appointment = Appointment.where(:start_time => params[:start_time]..params[:end_time])
+			appointment = Appointment.where(:start_time => Time.parse(params[:start_time])..Time.parse(params[:end_time]))
 		else
 			appointment = Appointment.find(params[:id])
 		end
