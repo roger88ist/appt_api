@@ -8,12 +8,18 @@ class Appointment < ActiveRecord::Base
 	private
 
 	def is_valid_days
-		self.start_time < self.end_time ? true : false
+		if self.start_time >= self.end_time
+			errors.add(:end_time, "Appointment ends before it starts")
+			return false
+		end
 	end
 
 	def is_future_appointment
 		time = Time.now
-		self.start_time > time && self.end_time > time ? true : false
+		if self.start_time < time
+			errors.add(:start_time, "Appointment must be in the future")
+			return false
+		end
 	end
 
 	def can_it_be_booked
@@ -23,14 +29,9 @@ class Appointment < ActiveRecord::Base
 		if today_appts.count > 0
 			today_appts.each do |appt|
 				if self.start_time < appt.end_time && self.end_time > appt.start_time
+					errors.add(:start_time, "Appointment is overlapping")
 					return false
 				end
-				# if (self.start_time >= appt.start_time && self.start_time < appt.end_time)
-				# 	return false
-				# end
-				# if (self.end_time > appt.start_time && self.end_time < appt.end_time)
-				# 	return false
-				# end
 			end
 		end
 		true
