@@ -2,8 +2,8 @@ class Api::AppointmentsController < ApplicationController
 	skip_before_filter :verify_authenticity_token
 
 	def index
-		appointments = Appointment.all
-		render_json_success_with_appointment(appointments)
+		# appointments = Appointment.all
+		render_json_success_with_appointment("You will need to perform a more specific search")
 	end
 
 	def show
