@@ -1,23 +1,24 @@
 # README
 
   ## Instructions to using the application.
-  As of now this application is running on `localhost:3000`.
-  1. So in order use it first clone the repo from your terminal.
-  2. Once you are inside the appt_api directory, run `bundle.`
-  3. run `rake db:migrate`
-  4. In another directory clone `https://github.com/roger88ist/appt_interface`
-  5. run `ruby test.rb`
-  6. Perform whatever operations you would like on the appointment application through test.rb
+  As of now this application is running on `https://rogeriosappointment.herokuapp.com/api/appointments`.
+  To interact with this app:
+  1. clone `https://github.com/roger88ist/appt_interface` into a directory.
+  2. run `ruby test.rb`
+  3. Perform whatever operations you would like on the appointment application through test.rb
 
 
 * Ruby version
-  ruby 2.3.0p0 
+  ruby 2.3.0p0
+  Rails 4.2.6
 
 * System dependencies
 
 * Configuration
 
 * Database creation
+`rake db:create`
+`rake db:migrate`
 
 * Database initialization
 
