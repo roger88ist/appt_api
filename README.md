@@ -27,7 +27,7 @@
 
 #### Search Appointments by first or last name.
   * GET request to URL followed by `/q?first_name=john` or `/q?last_name=doe`
-    - It is case insensitive.
+    - Not case sensitive.
 
 #### Create an Appointment
   * POST request to URL 
@@ -45,7 +45,7 @@
 ## Basic information on API
   * Client can only create appointments in the future.
   * Clients can only update future appointments.
-  * Appointments that do get updated can only use future dates for the new updated information as well.
+  * When updating appointments, new start time and end time must be in the future as well.
   * Appointments will not be created and/or updated if appointment time overlaps with existing appointments.
 
 
