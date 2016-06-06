@@ -11,8 +11,8 @@
   URL = **https://rogeriosappointment.herokuapp.com/api/appointments**
   
   1. See individual appointment by appointment id.
-  * GET request to URL followed by `/` and the id number.
-  - **example:** `https://rogeriosappointment.herokuapp.com/api/appointments/1`
+    * GET request to URL followed by `/` and the id number.
+      - **example:** `https://rogeriosappointment.herokuapp.com/api/appointments/1`
 
   2. See list of appointments by time.
   * GET request to URL followed by `/q?`, start time and end time parameters
