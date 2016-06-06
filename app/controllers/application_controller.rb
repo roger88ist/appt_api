@@ -6,9 +6,9 @@ class ApplicationController < ActionController::Base
   rescue_from ActiveRecord::RecordNotFound, :with => :record_not_found
 
   def record_not_found
-  	render status: 422, json: {
-  		status: 422,
-  		errors: "Id provided does not match a record"
+  	render status: 404, json: {
+  		status: 404,
+  		errors: "Id Not Found"
   		}.to_json
   end
 
