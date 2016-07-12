@@ -28,6 +28,7 @@ class Appointment < ActiveRecord::Base
 		today_appts = Appointment.where(:start_time => bod...eod)
 		if today_appts.count > 0
 			today_appts.each do |appt|
+				next if appt.id == self.id
 				if self.start_time < appt.end_time && self.end_time > appt.start_time
 					errors.add(:start_time, "Appointment is overlapping")
 					return false
@@ -36,5 +37,4 @@ class Appointment < ActiveRecord::Base
 		end
 		true
 	end
-
 end
